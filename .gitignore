@@ -7,3 +7,6 @@ node_modules/
 # Entornos locales
 .env
 .DS_Store
+
+# Evita que el autoput cambie al ejecutarlo
+auto_push.bat
