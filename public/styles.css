@@ -1,0 +1,166 @@
+/* General */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #121212;
+    color: #ffffff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .container {
+    max-width: 1300px;
+    height: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .title {
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background-color: #1e1e1e;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .header .logo h1 {
+    font-size: 1.8em;
+    color: #4caf50;
+    margin: 0;
+  }
+  
+  .nav {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 0 20px;
+    font-size: 1.2em;
+  }
+  
+  .theme-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #4caf50;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .theme-button.dark {
+    background-color: #444444;
+  }
+
+  .dark{
+    background-color: #444444;
+  }
+  
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 0 15px #4caf50;
+    overflow: hidden;
+  }
+  
+  thead {
+    background-color: #4caf50;
+    color: #ffffff;
+  }
+  
+  th{
+    text-align: left;
+    height: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+  } 
+  
+  td {
+    text-align: left;
+    height: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  td {
+    border: none;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #2e2e2e;
+  }
+
+  thead:hover{
+    background-color: #4caf50;
+  }
+  
+  tr:hover {
+    background-color: #444444;
+  }
+  
+  thead:hover{
+    background-color: #4caf50;
+  }
+
+  td a {
+    color: #4caf50;
+    text-decoration: none;
+  }
+  
+  td a:hover {
+    text-decoration: underline;
+  }
+  
+  .icon-success {
+    color: #4caf50;
+    margin-right: 5px;
+    font-weight: bold;
+  }
+
+  i{
+    height: 40px;
+    width: 40px;
+  }
+  
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+  }
+  
+  .pagination button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .pagination button:hover {
+    background-color: #3a8d41;
+  }
+  
+  .pagination span {
+    font-size: 1.2em;
+  }
+  
+  

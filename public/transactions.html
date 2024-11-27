@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dickchain Explorer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <h1>Dickchain</h1>
+    </div>
+    <nav class="nav">
+      <a href="#">Inicio</a>
+      <a href="#">Bloques</a>
+      <button id="theme-toggle" class="theme-button"></button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1 class="title">Explorador de Transacciones</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Firma</th>
+          <th>Bloque</th>
+          <th>Fecha</th>
+          <th>Tipo de Operación</th>
+          <th>Owner Anterior</th>
+          <th></th>
+          <th>Owner Nuevo</th>
+          <th>Id Transacción</th>
+        </tr>
+      </thead>
+      <tbody id="transaction-table-body">
+        <!-- Las transacciones se cargarán aquí -->
+      </tbody>
+    </table>
+    <div class="pagination">
+      <button id="prev-page">&lt;</button>
+      <span id="current-page">Page 1 of 1</span>
+      <button id="next-page">&gt;</button>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
