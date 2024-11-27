@@ -1,17 +1,11 @@
 
 # **Proyecto API REST con MySQL y BigchainDB**
 
-  
-
 ## **Descripción**
 
-Este proyecto es una API REST diseñada para integrar una base de datos relacional **MySQL** con **BigchainDB**, proporcionando almacenamiento rápido y seguro combinado con **inmutabilidad** y **trazabilidad**. Es ideal para aplicaciones donde la integridad y la autenticidad de los datos son fundamentales, como trazabilidad de la cadena de suministro, auditorías, registros académicos, y más.
-
-  
+Este proyecto es una API REST diseñada para integrar una base de datos relacional **MySQL** con **BigchainDB**, proporcionando almacenamiento rápido y seguro combinado con **inmutabilidad** y **trazabilidad**. Es ideal para aplicaciones donde la integridad y la autenticidad de los datos son fundamentales, como trazabilidad de la cadena de suministro, auditorías, registros académicos, y más.  
 
 ---
-
-  
 
 ## **Arquitectura del Proyecto**
 
@@ -56,7 +50,6 @@ Este proyecto es una API REST diseñada para integrar una base de datos relacion
      - Tendermint.
 
   
-
 ---
 
   
@@ -84,11 +77,9 @@ Este proyecto es una API REST diseñada para integrar una base de datos relacion
 3. **Cifrado y Descifrado:**
 
    - Los datos pueden cifrarse antes de almacenarse y solo usuarios autorizados pueden descifrarlos.
-
   
 
 ---
-
   
 
 ## **Tecnologías Empleadas**
@@ -109,11 +100,9 @@ Este proyecto es una API REST diseñada para integrar una base de datos relacion
 
 - **Tendermint**: Consenso tolerante a fallos para BigchainDB.
 
-  
 
 ---
 
-  
 
 ## **Endpoints Principales**
 
