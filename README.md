@@ -1,8 +1,28 @@
-Aquí tienes el contenido bien estructurado y atractivo, listo para añadir al README de tu proyecto en GitHub:
-
 ---
 
 # **Proyecto API REST con MySQL y BigchainDB**
+
+### **Requisito Previo: Instalación de Drivers de BigchainDB**
+Este proyecto requiere la instalación de los drivers de BigchainDB para interactuar con la base de datos distribuida. Elegir entre los drivers para **JavaScript** o **Python**, según necesidades.
+
+#### **Drivers BigchainDB:**
+- **JavaScript**: [Repositorio oficial de BigchainDB para JavaScript](https://github.com/bigchaindb/js-bigchaindb-driver)
+- **Python**: [Repositorio oficial de BigchainDB para Python](https://github.com/bigchaindb/bigchaindb-driver)
+
+#### **Instalación de Drivers:**
+
+- **Para JavaScript (usado en este proyecto):**
+  ```bash
+  npm install bigchaindb-driver
+  ```
+
+- **Para Python:**
+  ```bash
+  pip install bigchaindb-driver
+  ```
+
+
+---
 
 ### **Descripción**
 Este proyecto es una API REST diseñada para integrar una base de datos relacional **MySQL** con **BigchainDB**, proporcionando almacenamiento rápido y seguro combinado con inmutabilidad y trazabilidad. Es ideal para aplicaciones donde la integridad y la autenticidad de los datos son fundamentales, como:
@@ -119,3 +139,5 @@ Este proyecto se distribuye bajo la licencia **MIT**. Consulta el archivo [LICEN
 ¡Las contribuciones son bienvenidas! Si tienes ideas, mejoras o detectas algún problema, abre un **issue** o envía un **pull request**.
 
 ---
+
+NotPepeJulian
