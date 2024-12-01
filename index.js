@@ -169,20 +169,13 @@ app.delete('/delete_transaction/:id', async (req, res) => {
   const newTransactionId = crypto.randomUUID();
 
   try {
-    // Verificar si el registro existe
+    // Verificar si el registro existe en MySQL
     const [existingRows] = await db.promise().query('SELECT * FROM tabla_test WHERE id = ?', [id]);
     if (existingRows.length === 0) {
       return res.status(404).json({ error: 'Registro no encontrado' });
     }
 
     const { campo1, campo2 } = existingRows[0];
-
-    // Actualizar en MySQL para marcar como eliminado
-    const sqlDelete = `
-      UPDATE tabla_test 
-      SET operation_type = 'DELETE', transaction_id = ?, created_at = CURRENT_TIMESTAMP
-      WHERE id = ?`;
-    await db.promise().query(sqlDelete, [newTransactionId, id]);
 
     // Crear transacción en BigchainDB
     const assetData = {
@@ -201,18 +194,28 @@ app.delete('/delete_transaction/:id', async (req, res) => {
     );
 
     const signedTx = BigchainDB.Transaction.signTransaction(tx, alice.privateKey);
-
     await bdb.postTransactionCommit(signedTx);
 
+    // Eliminar registro de MySQL
+    const sqlDelete = 'DELETE FROM tabla_test WHERE id = ?';
+    await db.promise().query(sqlDelete, [id]);
+
+    // Registrar la transacción eliminada en el explorador
+    const sqlExplorerInsert = `
+      INSERT INTO tabla_test (campo1, campo2, transaction_id, operation_type, created_at)
+      VALUES (?, ?, ?, 'DELETE', CURRENT_TIMESTAMP)`;
+    await db.promise().query(sqlExplorerInsert, [campo1, campo2, signedTx.id]);
+
     res.json({
-      message: 'Datos marcados como eliminados y transacción registrada en BigchainDB',
+      message: 'Datos eliminados y transacción registrada en BigchainDB',
       transactionId: signedTx.id,
     });
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error al borrar transacción:', err);
     res.status(500).json({ error: 'Error al borrar transacción' });
   }
 });
+
 
 
 
