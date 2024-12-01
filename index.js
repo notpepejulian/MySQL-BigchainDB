@@ -76,8 +76,10 @@ app.post('/create_transaction', async (req, res) => {
 
   try {
     // Insertar en MySQL
-    const sql = 'INSERT INTO tabla_test (campo1, campo2) VALUES (?, ?)';
-    const [results] = await db.promise().query(sql, [campo1, campo2]);
+    const sql = `
+      INSERT INTO tabla_test (campo1, campo2, transaction_id, operation_type, created_at)
+      VALUES (?, ?, ?, 'CREATE', CURRENT_TIMESTAMP)`;
+    const [results] = await db.promise().query(sql, [campo1, campo2, crypto.randomUUID()]);
 
     const assetData = { campo1, campo2, timestamp: new Date().toISOString() };
     const dataHash = crypto.createHash('sha256').update(JSON.stringify(assetData)).digest('hex');
@@ -94,8 +96,9 @@ app.post('/create_transaction', async (req, res) => {
 
     await bdb.postTransactionCommit(signedTx);
 
-    // Almacenar ID de transacción en MySQL
-    const updateSql = 'UPDATE tabla_test SET transaction_id = ? WHERE id = ?';
+    // Actualizar `transaction_id` en MySQL
+    const updateSql = `
+      UPDATE tabla_test SET transaction_id = ? WHERE id = ?`;
     await db.promise().query(updateSql, [signedTx.id, results.insertId]);
 
     res.status(201).json({
@@ -108,6 +111,7 @@ app.post('/create_transaction', async (req, res) => {
   }
 });
 
+
 // Endpoint para el update
 app.put('/update_transaction/:id', async (req, res) => {
   const { id } = req.params;
@@ -117,14 +121,12 @@ app.put('/update_transaction/:id', async (req, res) => {
     return res.status(400).json({ error: 'Los campos campo1 y campo2 son requeridos' });
   }
 
-  const newTransactionId = crypto.randomUUID();
+  const newTransactionId = crypto.randomUUID(); // Generar un nuevo ID para BigchainDB
 
   try {
-    // Actualizar en MySQL
-    const sqlUpdate = 'UPDATE tabla_test SET campo1 = ?, campo2 = ?, transaction_id = ? WHERE id = ?';
-    const [results] = await db.promise().query(sqlUpdate, [campo1, campo2, newTransactionId, id]);
-
-    if (results.affectedRows === 0) {
+    // Verificar si el registro existe en MySQL
+    const [existingRows] = await db.promise().query('SELECT * FROM tabla_test WHERE id = ?', [id]);
+    if (existingRows.length === 0) {
       return res.status(404).json({ error: 'Registro no encontrado' });
     }
 
@@ -140,23 +142,24 @@ app.put('/update_transaction/:id', async (req, res) => {
     );
 
     const signedTx = BigchainDB.Transaction.signTransaction(tx, alice.privateKey);
-
     await bdb.postTransactionCommit(signedTx);
 
-    // Actualizar ID de transacción en MySQL
-    const updateSql = 'UPDATE tabla_test SET transaction_id = ? WHERE id = ?';
-    await db.promise().query(updateSql, [signedTx.id, id]);
+    // Actualizar la base de datos MySQL con los nuevos valores
+    const sqlUpdate = `
+      UPDATE tabla_test
+      SET campo1 = ?, campo2 = ?, transaction_id = ?, operation_type = 'UPDATE', created_at = CURRENT_TIMESTAMP
+      WHERE id = ?`;
+    await db.promise().query(sqlUpdate, [campo1, campo2, signedTx.id, id]);
 
     res.json({
       message: 'Datos actualizados y transacción registrada en BigchainDB',
       transactionId: signedTx.id,
     });
   } catch (err) {
-    console.error('Error:', err);
+    console.error('Error al actualizar transacción:', err);
     res.status(500).json({ error: 'Error al actualizar transacción' });
   }
 });
-
 
 
 // **DELETE**: Borrar una transacción existente
@@ -172,10 +175,19 @@ app.delete('/delete_transaction/:id', async (req, res) => {
       return res.status(404).json({ error: 'Registro no encontrado' });
     }
 
-    // Crear transacción en BigchainDB para DELETE
+    const { campo1, campo2 } = existingRows[0];
+
+    // Actualizar en MySQL para marcar como eliminado
+    const sqlDelete = `
+      UPDATE tabla_test 
+      SET operation_type = 'DELETE', transaction_id = ?, created_at = CURRENT_TIMESTAMP
+      WHERE id = ?`;
+    await db.promise().query(sqlDelete, [newTransactionId, id]);
+
+    // Crear transacción en BigchainDB
     const assetData = {
-      campo1: existingRows[0].campo1,
-      campo2: existingRows[0].campo2,
+      campo1,
+      campo2,
       operation: 'DELETE',
       timestamp: new Date().toISOString(),
     };
@@ -192,12 +204,8 @@ app.delete('/delete_transaction/:id', async (req, res) => {
 
     await bdb.postTransactionCommit(signedTx);
 
-    // Eliminar registro de MySQL
-    const deleteSql = 'DELETE FROM tabla_test WHERE id = ?';
-    await db.promise().query(deleteSql, [id]);
-
     res.json({
-      message: 'Datos eliminados y transacción registrada en BigchainDB',
+      message: 'Datos marcados como eliminados y transacción registrada en BigchainDB',
       transactionId: signedTx.id,
     });
   } catch (err) {
@@ -208,27 +216,23 @@ app.delete('/delete_transaction/:id', async (req, res) => {
 
 
 
+
 // **GET**: Listar transacciones (ya incluido en el middleware original)
 app.get('/transactions', async (req, res) => {
   try {
-    // Consultar los IDs de las transacciones en MySQL
-    const sql = 'SELECT transaction_id FROM tabla_test ORDER BY created_at DESC';
+    // Consultar transacciones desde MySQL
+    const sql = 'SELECT * FROM tabla_test ORDER BY created_at DESC';
     const [mysqlTransactions] = await db.promise().query(sql);
 
-    // Si no hay transacciones en MySQL, devolver vacío
-    if (mysqlTransactions.length === 0) {
-      return res.json([]);
-    }
-
-    // Formatear las transacciones
+    // Obtener y formatear datos para el explorador de transacciones
     const transactions = await Promise.all(
       mysqlTransactions.map(async (row) => {
         if (!row.transaction_id) {
           return {
             firma: 'Sin Firma',
             bloque: 'Sin Bloque',
-            fecha: new Date().toISOString(),
-            tipoOperacion: 'N/A',
+            fecha: row.created_at,
+            tipoOperacion: row.operation_type || 'N/A',
             ownerAnterior: 'Sin Propietario',
             nuevoOwner: 'Sin Nuevo Propietario',
             to: 'to',
@@ -237,54 +241,40 @@ app.get('/transactions', async (req, res) => {
         }
 
         try {
-          // Consultar la transacción en BigchainDB por ID
+          // Obtener detalles de la transacción desde BigchainDB
           const transactionResponse = await fetch(
             `http://192.168.1.100:9984/api/v1/transactions/${row.transaction_id}`
           );
           const transactionDetails = await transactionResponse.json();
 
-          // Opcional: Consultar bloque asociado (si es necesario)
+          // Obtener bloque asociado (si es necesario)
           const blockResponse = await fetch(
             `http://192.168.1.100:9984/api/v1/blocks?transaction_id=${row.transaction_id}`
           );
           const blockData = await blockResponse.json();
           const blockId = blockData.length > 0 ? blockData[0] : 'Sin Bloque';
 
-          // Formatear fecha y datos de la transacción
-          const formatTimestamp = (timestamp) => {
-            const date = new Date(timestamp);
-            const options = {
-              hour: '2-digit',
-              minute: '2-digit',
-              second: '2-digit',
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-            };
-            return date.toLocaleString('es-ES', options);
-          };
-
           return {
             firma: shortenHash(transactionDetails.inputs[0]?.fulfillment) || 'Sin Firma',
             bloque: blockId,
             fecha: formatTimestamp(transactionDetails.asset.data.timestamp || transactionDetails.timestamp),
-            tipoOperacion: transactionDetails.operation.toUpperCase(),
+            tipoOperacion: row.operation_type,
             ownerAnterior: shortenHash(transactionDetails.inputs[0]?.owners_before[0]) || 'Sin Propietario',
             nuevoOwner: shortenHash(transactionDetails.outputs[0]?.public_keys[0]) || 'Sin Nuevo Propietario',
             to: 'to',
             idTransaccion: shortenHash(transactionDetails.id),
           };
         } catch (error) {
-          console.error(`Error al obtener transacción con ID ${row.transaction_id}:`, error);
+          console.error(`Error al procesar transacción con ID ${row.transaction_id}:`, error);
           return {
-            firma: shortenHash(row.transaction_id) || 'Error al obtener firma',
+            firma: shortenHash(row.transaction_id) || 'Error',
             bloque: 'Error al obtener bloque',
-            fecha: new Date().toISOString(),
-            tipoOperacion: 'Error',
+            fecha: row.created_at,
+            tipoOperacion: row.operation_type || 'Error',
             ownerAnterior: 'Error',
             nuevoOwner: 'Error',
             to: 'to',
-            idTransaccion: shortenHash(row.transaction_id) || 'Sin ID',
+            idTransaccion: shortenHash(row.transaction_id) || 'Error',
           };
         }
       })
@@ -296,6 +286,8 @@ app.get('/transactions', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener las transacciones' });
   }
 });
+
+
 
 
 // Servir archivos estáticos
