@@ -9,4 +9,4 @@ node_modules/
 .DS_Store
 
 # Evitar cambios en el autopush
-auto_push.bat
+*.bat
