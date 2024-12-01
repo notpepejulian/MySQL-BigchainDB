@@ -23,23 +23,34 @@ function displayTransactions(transactions, page, rows) {
   const paginatedItems = transactions.slice(start, end);
 
   paginatedItems.forEach((transaction) => {
-    const shortenedId = `${transaction.idTransaccion.slice(0, 4)}...${transaction.idTransaccion.slice(-4)}`;
-    const shortenedBlock = transaction.bloque !== 'Sin Bloque' ? `${transaction.bloque}` : 'Sin Bloque';
+    const shortenedId =
+      transaction.idTransaccion && transaction.idTransaccion !== 'Sin ID'
+        ? `${transaction.idTransaccion.slice(0, 8)}...${transaction.idTransaccion.slice(-8)}`
+        : 'Sin ID';
+    const shortenedBlock =
+      transaction.bloque && transaction.bloque !== 'Sin Bloque' ? `${transaction.bloque}` : 'Sin Bloque';
 
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${transaction.firma}</td>
+      <td>${transaction.firma || 'Sin Firma'}</td>
       <td>${shortenedBlock}</td>
-      <td>${transaction.fecha}</td>
-      <td>${transaction.tipoOperacion}</td>
-      <td>${transaction.ownerAnterior}</td>
-      <td>${transaction.to}</td>
-      <td>${transaction.nuevoOwner}</td>
-      <td><a href="http://192.168.1.100:9984/api/v1/transactions/${transaction.idTransaccion}" target="_blank">${shortenedId}</a></td>
+      <td>${transaction.fecha || 'Fecha desconocida'}</td>
+      <td>${transaction.tipoOperacion || 'N/A'}</td>
+      <td>${transaction.ownerAnterior || 'Sin Propietario'}</td>
+      <td>${transaction.to || 'to'}</td>
+      <td>${transaction.nuevoOwner || 'Sin Nuevo Propietario'}</td>
+      <td>
+        ${
+          transaction.idTransaccion && transaction.idTransaccion !== 'Sin ID'
+            ? `<a href="http://192.168.1.100:9984/api/v1/transactions/${transaction.idTransaccion}" target="_blank">${shortenedId}</a>`
+            : 'Sin ID'
+        }
+      </td>
     `;
     tableBody.appendChild(row);
   });
 }
+
 
 // Configurar la paginación
 function setupPagination(totalItems, rowsPerPage) {

@@ -35,7 +35,9 @@ function displayTransactions(transactions, page, rows) {
       <td>${transaction.ownerAnterior}</td>
       <td>${transaction.to}</td>
       <td>${transaction.nuevoOwner}</td>
-      <td><a href="http://192.168.1.100:9984/api/v1/transactions/${transaction.idTransaccion}" target="_blank">${shortenedId}</a></td>
+      <td>
+        <a href="http://192.168.1.100:9984/api/v1/transactions/${transaction.idTransaccion}" target="_blank">${shortenedId}</a>
+      </td>
     `;
     tableBody.appendChild(row);
   });
