@@ -211,16 +211,29 @@ app.delete('/delete_transaction/:id', async (req, res) => {
 // **GET**: Listar transacciones (ya incluido en el middleware original)
 app.get('/transactions', async (req, res) => {
   try {
+<<<<<<< HEAD
     const sql = 'SELECT * FROM tabla_test ORDER BY created_at DESC';
     const [results] = await db.promise().query(sql);
 
+=======
+    // Consultar los IDs de las transacciones en MySQL
+    const sql = 'SELECT transaction_id FROM tabla_test ORDER BY created_at DESC';
+    const [mysqlTransactions] = await db.promise().query(sql);
+
+    // Si no hay transacciones en MySQL, devolver vacío
+    if (mysqlTransactions.length === 0) {
+      return res.json([]);
+    }
+
+    // Formatear las transacciones
+>>>>>>> main
     const transactions = await Promise.all(
-      results.map(async (row) => {
+      mysqlTransactions.map(async (row) => {
         if (!row.transaction_id) {
           return {
             firma: 'Sin Firma',
             bloque: 'Sin Bloque',
-            fecha: row.created_at || new Date().toISOString(),
+            fecha: new Date().toISOString(),
             tipoOperacion: 'N/A',
             ownerAnterior: 'Sin Propietario',
             nuevoOwner: 'Sin Nuevo Propietario',
@@ -230,35 +243,52 @@ app.get('/transactions', async (req, res) => {
         }
 
         try {
-          // Consultar detalles de la transacción en BigchainDB
+          // Consultar la transacción en BigchainDB por ID
           const transactionResponse = await fetch(
             `http://192.168.1.100:9984/api/v1/transactions/${row.transaction_id}`
           );
           const transactionDetails = await transactionResponse.json();
 
-          // Consultar bloque asociado
+          // Opcional: Consultar bloque asociado (si es necesario)
           const blockResponse = await fetch(
             `http://192.168.1.100:9984/api/v1/blocks?transaction_id=${row.transaction_id}`
           );
           const blockData = await blockResponse.json();
           const blockId = blockData.length > 0 ? blockData[0] : 'Sin Bloque';
 
+<<<<<<< HEAD
+=======
+          // Formatear fecha y datos de la transacción
+          const formatTimestamp = (timestamp) => {
+            const date = new Date(timestamp);
+            const options = {
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            };
+            return date.toLocaleString('es-ES', options);
+          };
+
+>>>>>>> main
           return {
             firma: shortenHash(transactionDetails.inputs[0]?.fulfillment) || 'Sin Firma',
             bloque: blockId,
             fecha: formatTimestamp(transactionDetails.asset.data.timestamp || transactionDetails.timestamp),
-            tipoOperacion: transactionDetails.operation || 'N/A',
+            tipoOperacion: transactionDetails.operation.toUpperCase(),
             ownerAnterior: shortenHash(transactionDetails.inputs[0]?.owners_before[0]) || 'Sin Propietario',
             nuevoOwner: shortenHash(transactionDetails.outputs[0]?.public_keys[0]) || 'Sin Nuevo Propietario',
             to: 'to',
             idTransaccion: shortenHash(transactionDetails.id),
           };
         } catch (error) {
-          console.error(`Error al procesar transacción con ID ${row.transaction_id}:`, error);
+          console.error(`Error al obtener transacción con ID ${row.transaction_id}:`, error);
           return {
             firma: shortenHash(row.transaction_id) || 'Error al obtener firma',
             bloque: 'Error al obtener bloque',
-            fecha: row.created_at || new Date().toISOString(),
+            fecha: new Date().toISOString(),
             tipoOperacion: 'Error',
             ownerAnterior: 'Error',
             nuevoOwner: 'Error',
@@ -270,12 +300,22 @@ app.get('/transactions', async (req, res) => {
     );
 
     res.json(transactions);
+<<<<<<< HEAD
   } catch (err) {
     console.error('Error al obtener transacciones:', err);
     res.status(500).json({ error: 'Error al obtener transacciones' });
   }
 });
 
+=======
+  } catch (error) {
+    console.error('Error al obtener las transacciones:', error);
+    res.status(500).json({ error: 'Error al obtener las transacciones' });
+  }
+});
+
+
+>>>>>>> main
 // Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
