@@ -8,5 +8,5 @@ node_modules/
 .env
 .DS_Store
 
-# Evita que el autoput cambie al ejecutarlo
+# Evitar cambios en el autopush
 auto_push.bat
