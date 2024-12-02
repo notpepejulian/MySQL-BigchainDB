@@ -2,13 +2,14 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    background-color: #121212;
+    /* background-color: #121212; */
     color: #ffffff;
     transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 14px;
   }
   
   .container {
-    max-width: 1300px;
+    max-width: 1500px;
     height: 900px;
     margin: 0 auto;
     padding: 20px;
@@ -16,7 +17,7 @@ body {
   
   .title {
     color: #ffffff;
-    font-weight: bold;
+    font-weight: 400;
     text-align: center;
     margin-top: 10px;
   }
@@ -79,7 +80,7 @@ body {
   }
   
   thead {
-    background-color: #4caf50;
+    /* background-color: #4caf50; */
     color: #ffffff;
   }
   
@@ -95,11 +96,18 @@ body {
     height: 60px;
     padding-left: 20px;
     padding-right: 20px;
+    border: none;
+    
   }
   
-  td {
-    border: none;
+  table tr {
+    border-bottom: 1px solid #283829;
   }
+
+  tr {
+    background-color: #1e1e1e;
+  }
+
   
   tr:nth-child(even) {
     background-color: #2e2e2e;
@@ -160,7 +168,48 @@ body {
   }
   
   .pagination span {
-    font-size: 1.2em;
+    font-size: 14px;
+  }
+
+  .dropdown td {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-top: 1px solid #4caf50;
+    padding: 10px;
   }
   
   
+  /* Estilo para el ID de la transacción */
+.transaction-id {
+  color: #4caf50;
+  cursor: pointer; /* Cambia el cursor a un estilo de enlace */
+  text-decoration: none; /* Opcional, para indicar interactividad */
+}
+
+.transaction-id:hover {
+  text-decoration: none;
+  filter: brightness(1.2); /* Efecto visual al pasar el ratón */
+}
+
+/* Estilo para el desplegable */
+.dropdown td {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  border-top: 1px solid #4caf50;
+  padding: 20px;
+  animation: smoothDropdown 0.3s ease-in-out; /* Animación para suavizar */
+}
+
+/* Estilo para el contenedor de la respuesta (desplegable) */
+.dropdown-content {
+  overflow: hidden;
+  height: 0; /* Comienza cerrado */
+  transition: height 0.3s ease; /* Animación suave */
+  background-color: #1e1e1e;
+  color: #ffffff;
+  padding: 0 20px; /* Sin padding al inicio */
+}
+
+.dropdown-content.open {
+  padding: 20px; /* Añade padding al abrir */
+}
