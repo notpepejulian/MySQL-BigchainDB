@@ -14,7 +14,7 @@ async function loadTransactions() {
   }
 }
 
-// Mostrar las transacciones en la tabla con desplegables
+// Mostrar las transacciones en la tabla
 function displayTransactions(transactions, page, rows) {
   const tableBody = document.getElementById('transaction-table-body');
   tableBody.innerHTML = '';
@@ -29,23 +29,17 @@ function displayTransactions(transactions, page, rows) {
     const row = document.createElement('tr');
     row.innerHTML = `
       <td>${transaction.firma}</td>
-      <td>${transaction.bloque}</td>
+      <td>${shortenedBlock}</td>
       <td>${transaction.fecha}</td>
       <td>${transaction.tipoOperacion}</td>
       <td>${transaction.ownerAnterior}</td>
       <td>${transaction.to}</td>
       <td>${transaction.nuevoOwner}</td>
-      <td>
-        <span class="transaction-id" data-id="${transaction.idTransaccion}">
-          ${shortenedId}
-        </span>
-      </td>
+      <td><a href="http://192.168.1.100:9984/api/v1/transactions/${transaction.idTransaccion}" target="_blank">${shortenedId}</a></td>
     `;
     tableBody.appendChild(row);
   });
 }
-
-
 
 // Cambiar entre temas de color
 const themeToggle = document.getElementById('theme-toggle'); // seleccionar el boton del tema
