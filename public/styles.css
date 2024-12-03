@@ -13,6 +13,7 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
     font-size: 14px;
     background-color: #2e2e2e;
+    height: auto;
   }
   
 
@@ -267,13 +268,16 @@ tbody tr:hover{
   text-align: center;
   justify-content: center;
   align-items: center;
+  background-color: #1e1e1e;
+  height: 50px;
+  border-radius: 10px;
 }
 
 .pagination button {
   margin: 0 5px;
   padding: 5px 10px;
   font-size: 14px;
-  background-color: #444;
+  background-color: #1e1e1e;
   color: #fff;
   border: none;
   border-radius: 5px;
