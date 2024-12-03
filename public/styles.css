@@ -1,4 +1,10 @@
 /* General */
+
+
+html{
+  scroll-behavior: smooth;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,8 +12,15 @@ body {
     color: #ffffff;
     transition: background-color 0.3s ease, color 0.3s ease;
     font-size: 14px;
+    background-color: #2e2e2e;
   }
   
+
+  hr{
+    border: .3px solid #979797;
+    margin: 20px 0;
+  }
+
   .container {
     max-width: 1500px;
     height: 900px;
@@ -17,9 +30,10 @@ body {
   
   .title {
     color: #ffffff;
-    font-weight: 400;
-    text-align: center;
+    font-weight: 700;
     margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 32px;
   }
   
   /* Header */
@@ -30,12 +44,13 @@ body {
     padding: 15px 40px;
     background-color: #1e1e1e;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+
   }
   
   .header .logo h1 {
     font-size: 1.8em;
-    color: #4caf50;
-    margin: 0;
+    color: #00e8b4;
+    margin: 0 ;
   }
   
   .nav {
@@ -53,9 +68,9 @@ body {
   .theme-button {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: 75%;
     border: none;
-    background-color: #4caf50;
+    background-color: #00e8b4;
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
@@ -74,8 +89,8 @@ body {
     border-collapse: collapse;
     margin-top: 20px;
     background-color: #1e1e1e;
-    border-radius: 10px;
-    box-shadow: 0 0 15px #4caf50;
+    border-radius: 15px;
+    box-shadow: 0 0 15px#00e8b4;
     overflow: hidden;
   }
   
@@ -108,34 +123,27 @@ body {
     background-color: #1e1e1e;
   }
 
-  
-  tr:nth-child(even) {
-    background-color: #2e2e2e;
-  }
 
   thead:hover{
-    background-color: #4caf50;
+    background-color:#00e8b4;
   }
   
-  tr:hover {
-    background-color: #444444;
-  }
-  
-  thead:hover{
-    background-color: #4caf50;
-  }
+tbody tr:hover{
+  background-color: #171717;
+}  
 
   td a {
-    color: #4caf50;
+    color:#00e8b4;
     text-decoration: none;
   }
   
   td a:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    color: #00b78f ;
   }
   
   .icon-success {
-    color: #4caf50;
+    color: #00e8b4;
     margin-right: 5px;
     font-weight: bold;
   }
@@ -148,8 +156,156 @@ body {
   .details-row {
     background-color: #2e2e2e;
   }
+
+  .details-row:hover{
+    background-color: #2e2e2e;
+  }
   
   .details-row td {
     padding: 20px;
   }
+
+  .details-containerF{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
   
+  .details-container {
+    width: 75%;
+    font-family: "Banscherift", Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+.detail-value{
+  height: 40px;
+  display: flex;
+  color: #bbbbbb;
+
+}
+
+.detail-status{
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+.detail-title{
+  color: #bbbbbb;
+}
+
+.transaction-status{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.left-container{
+  width: 30%;
+}
+
+.right-container{
+  width: 70%;
+}
+
+.aproved{
+  border: 1px solid #00e868 ;
+  border-radius: 15px;
+  padding: 1px 15px;
+  text-align: center;
+  display: flex;
+  align-items: center; 
+}
+
+.success{
+  color: #00e868;
+}
+
+.fa-circle-info{
+  color: #bbbbbb;
+}
+
+.contenedor-padre-desplegable{
+  border-collapse: collapse;
+  border-radius: 15px;
+  box-shadow: 0 0 15px #959595;
+  background-color: #2e2e2e;
+  padding: 30px;
+}
+
+.container-metadata{
+  margin-top: 40px;
+}
+
+.title-metadata{
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.markdown{
+  border-collapse: collapse;
+  border-radius: 15px;
+  background-color: #1e1e1e;
+  box-shadow: 0 0 10px #505050;
+  padding: 30px;
+}
+
+.pagination{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  text-align: center;
+}
+
+.pagination-container{
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+  background-color: #00e8b4;
+}
+
+.pagination i {
+  font-size: 16px;
+}
+
+#last-page{
+  height: 30px;
+}
+
+#prev-page{
+  height: 25px;
+}
+#first-page{
+  height: 30px;
+}
+
+#next-page{
+  height: 25px;
+
+}
+
+#current-page{
+  font-weight: 400;
+  font-family: Arial, Helvetica, sans-serif;
+}
