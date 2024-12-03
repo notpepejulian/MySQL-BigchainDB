@@ -216,16 +216,13 @@ app.delete('/delete_transaction/:id', async (req, res) => {
 
 app.get('/transactions', async (req, res) => {
   try {
-    // Consultar los transaction_id y operation_type desde MySQL
     const sql = 'SELECT transaction_id, operation_type FROM tabla_test ORDER BY created_at DESC';
     const [mysqlTransactions] = await db.promise().query(sql);
 
-    // Si no hay transacciones en MySQL, devolver vacío
     if (!mysqlTransactions || mysqlTransactions.length === 0) {
       return res.json([]);
     }
 
-    // Obtener detalles de las transacciones desde BigchainDB
     const transactions = await Promise.all(
       mysqlTransactions.map(async (row) => {
         if (!row.transaction_id) {
@@ -233,38 +230,35 @@ app.get('/transactions', async (req, res) => {
             firma: 'Sin Firma',
             bloque: 'Sin Bloque',
             fecha: 'Sin Fecha',
-            tipoOperacion: row.operation_type || 'N/A', // Tomar el operation_type desde MySQL
+            tipoOperacion: row.operation_type || 'N/A',
             ownerAnterior: 'Sin Propietario',
             nuevoOwner: 'Sin Nuevo Propietario',
             to: 'to',
-            idTransaccion: 'Sin ID',
+            idTransaccion: 'Sin ID', // Dejar el ID como está
           };
         }
 
         try {
-          // Consultar la transacción en BigchainDB por su ID
           const transactionResponse = await fetch(
             `http://192.168.1.100:9984/api/v1/transactions/${row.transaction_id}`
           );
           const transactionDetails = await transactionResponse.json();
 
-          // Consultar bloque asociado a la transacción
           const blockResponse = await fetch(
             `http://192.168.1.100:9984/api/v1/blocks?transaction_id=${row.transaction_id}`
           );
           const blockData = await blockResponse.json();
           const blockId = blockData.length > 0 ? blockData[0] : 'Sin Bloque';
 
-          // Formatear la transacción para el explorador
           return {
-            firma: shortenHash(transactionDetails.inputs[0]?.fulfillment) || 'Sin Firma',
+            firma: shortenHash(transactionDetails.inputs[0]?.fulfillment) || 'Sin Firma', // Acortar la firma
             bloque: blockId,
             fecha: formatTimestamp(transactionDetails.asset.data.timestamp || transactionDetails.timestamp),
-            tipoOperacion: row.operation_type.toUpperCase(), // Usar el operation_type desde MySQL
-            ownerAnterior: shortenHash(transactionDetails.inputs[0]?.owners_before[0]) || 'Sin Propietario',
-            nuevoOwner: shortenHash(transactionDetails.outputs[0]?.public_keys[0]) || 'Sin Nuevo Propietario',
+            tipoOperacion: row.operation_type.toUpperCase(),
+            ownerAnterior: shortenHash(transactionDetails.inputs[0]?.owners_before[0]) || 'Sin Propietario', // Acortar el owner anterior
+            nuevoOwner: shortenHash(transactionDetails.outputs[0]?.public_keys[0]) || 'Sin Nuevo Propietario', // Acortar el nuevo owner
             to: 'to',
-            idTransaccion: shortenHash(transactionDetails.id),
+            idTransaccion: row.transaction_id, // Mantener el transaction_id completo
           };
         } catch (error) {
           console.error(`Error al obtener transacción con ID ${row.transaction_id}:`, error);
@@ -276,7 +270,7 @@ app.get('/transactions', async (req, res) => {
             ownerAnterior: 'Error',
             nuevoOwner: 'Error',
             to: 'Error',
-            idTransaccion: 'Error',
+            idTransaccion: row.transaction_id, // Enviar el ID completo incluso en caso de error
           };
         }
       })
@@ -288,7 +282,6 @@ app.get('/transactions', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener las transacciones' });
   }
 });
-
 
 // Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
