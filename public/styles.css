@@ -144,3 +144,12 @@ body {
     height: 40px;
     width: 40px;
   }
+
+  .details-row {
+    background-color: #2e2e2e;
+  }
+  
+  .details-row td {
+    padding: 20px;
+  }
+  
