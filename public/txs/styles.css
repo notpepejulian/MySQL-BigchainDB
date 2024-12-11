@@ -313,3 +313,34 @@ tbody tr:hover{
   font-weight: 400;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.fa-arrow-right{
+  display: flex;
+  align-content: center;
+}
+
+
+/* Estilos para graficos  */
+
+.page-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 40px;
+  font-family: 'Arial', sans-serif;
+  color: #00e8b4;
+}
+
+/* Estilo para el contenedor del gráfico */
+.chart-container {
+  max-width: 800px;
+  margin: 30px auto;
+  text-align: center;
+}
+
+/* Estilo para el gráfico */
+canvas {
+  width: 100% !important;
+  height: auto !important;
+}
+
+

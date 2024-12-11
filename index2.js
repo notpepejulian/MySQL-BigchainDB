@@ -7,9 +7,17 @@ const crypto = require('crypto');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const path = require('path');
 const Joi = require('joi'); // Validación de datos
+const { exec } = require('child_process');
+const cors = require('cors'); // Para habilitar CORS
 
 const app = express();
-app.use(express.json());
+const appMetrics = express(); // Creamos otro servidor para las métricas
+
+// Configuración de CORS para el servidor de métricas
+appMetrics.use(cors());
+
+// Middleware para servir archivos estáticos de la carpeta 'network' en el servidor de métricas
+appMetrics.use('/network', express.static(path.join(__dirname, 'network')));
 
 // Configuración de MySQL
 const db = mysql.createConnection({
@@ -55,7 +63,10 @@ const formatTimestamp = (timestamp) => {
   return date.toLocaleString('es-ES', options);
 };
 
-// Endpoint raíz
+// Configurar el middleware para el primer servidor (API REST BigchainDB)
+app.use(express.json());
+
+// Endpoint raíz del primer servidor
 app.get('/', (req, res) => {
   res.send('Bienvenido a la API REST de BigchainDB');
 });
@@ -111,8 +122,7 @@ app.post('/create_transaction', async (req, res) => {
   }
 });
 
-
-// Endpoint para el update
+// **UPDATE**: Actualizar una transacción
 app.put('/update_transaction/:id', async (req, res) => {
   const { id } = req.params;
   const { campo1, campo2 } = req.body;
@@ -161,8 +171,6 @@ app.put('/update_transaction/:id', async (req, res) => {
     res.status(500).json({ error: 'Error al actualizar transacción' });
   }
 });
-
-
 
 // **DELETE**: Borrar una transacción existente
 app.delete('/delete_transaction/:id', async (req, res) => {
@@ -216,16 +224,13 @@ app.delete('/delete_transaction/:id', async (req, res) => {
 
 app.get('/transactions', async (req, res) => {
   try {
-    // Consultar los transaction_id y operation_type desde MySQL
     const sql = 'SELECT transaction_id, operation_type FROM tabla_test ORDER BY created_at DESC';
     const [mysqlTransactions] = await db.promise().query(sql);
 
-    // Si no hay transacciones en MySQL, devolver vacío
     if (!mysqlTransactions || mysqlTransactions.length === 0) {
       return res.json([]);
     }
 
-    // Obtener detalles de las transacciones desde BigchainDB
     const transactions = await Promise.all(
       mysqlTransactions.map(async (row) => {
         if (!row.transaction_id) {
@@ -233,38 +238,35 @@ app.get('/transactions', async (req, res) => {
             firma: 'Sin Firma',
             bloque: 'Sin Bloque',
             fecha: 'Sin Fecha',
-            tipoOperacion: row.operation_type || 'N/A', // Tomar el operation_type desde MySQL
+            tipoOperacion: row.operation_type || 'N/A',
             ownerAnterior: 'Sin Propietario',
             nuevoOwner: 'Sin Nuevo Propietario',
             to: 'to',
-            idTransaccion: 'Sin ID',
+            idTransaccion: 'Sin ID', // Dejar el ID como está
           };
         }
 
         try {
-          // Consultar la transacción en BigchainDB por su ID
           const transactionResponse = await fetch(
             `http://192.168.1.100:9984/api/v1/transactions/${row.transaction_id}`
           );
           const transactionDetails = await transactionResponse.json();
 
-          // Consultar bloque asociado a la transacción
           const blockResponse = await fetch(
             `http://192.168.1.100:9984/api/v1/blocks?transaction_id=${row.transaction_id}`
           );
           const blockData = await blockResponse.json();
           const blockId = blockData.length > 0 ? blockData[0] : 'Sin Bloque';
 
-          // Formatear la transacción para el explorador
           return {
-            firma: shortenHash(transactionDetails.inputs[0]?.fulfillment) || 'Sin Firma',
+            firma: shortenHash(transactionDetails.inputs[0]?.fulfillment) || 'Sin Firma', // Acortar la firma
             bloque: blockId,
             fecha: formatTimestamp(transactionDetails.asset.data.timestamp || transactionDetails.timestamp),
-            tipoOperacion: row.operation_type.toUpperCase(), // Usar el operation_type desde MySQL
-            ownerAnterior: shortenHash(transactionDetails.inputs[0]?.owners_before[0]) || 'Sin Propietario',
-            nuevoOwner: shortenHash(transactionDetails.outputs[0]?.public_keys[0]) || 'Sin Nuevo Propietario',
+            tipoOperacion: row.operation_type.toUpperCase(),
+            ownerAnterior: shortenHash(transactionDetails.inputs[0]?.owners_before[0]) || 'Sin Propietario', // Acortar el owner anterior
+            nuevoOwner: shortenHash(transactionDetails.outputs[0]?.public_keys[0]) || 'Sin Nuevo Propietario', // Acortar el nuevo owner
             to: 'to',
-            idTransaccion: shortenHash(transactionDetails.id),
+            idTransaccion: row.transaction_id, // Mantener el transaction_id completo
           };
         } catch (error) {
           console.error(`Error al obtener transacción con ID ${row.transaction_id}:`, error);
@@ -276,7 +278,7 @@ app.get('/transactions', async (req, res) => {
             ownerAnterior: 'Error',
             nuevoOwner: 'Error',
             to: 'Error',
-            idTransaccion: 'Error',
+            idTransaccion: row.transaction_id, // Enviar el ID completo incluso en caso de error
           };
         }
       })
@@ -289,11 +291,67 @@ app.get('/transactions', async (req, res) => {
   }
 });
 
-
-// Servir archivos estáticos
+// Servir archivos estáticos del servidor principal
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Iniciar servidor
+// Iniciar servidor API REST en el puerto 3000
 app.listen(3000, () => {
   console.log('Servidor API REST ejecutándose en http://localhost:3000');
 });
+
+// Endpoint para obtener las métricas
+appMetrics.get('/metrics', (req, res) => {
+  exec('curl -s http://192.168.1.100:9100/metrics', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error al ejecutar curl: ${error.message}`);
+      return res.status(500).send(`Error al ejecutar curl: ${error.message}`);
+    }
+    if (stderr) {
+      console.error(`Error en stderr: ${stderr}`);
+      return res.status(500).send(`Error en stderr: ${stderr}`);
+    }
+
+    if (!stdout) {
+      console.error('No se recibió ningún dato de Prometheus');
+      return res.status(500).send('No se recibió ningún dato de Prometheus');
+    }
+
+    try {
+      const metrics = parseMetrics(stdout);
+      res.json(metrics);
+    } catch (err) {
+      console.error('Error al procesar las métricas:', err);
+      return res.status(500).send(`Error al procesar las métricas: ${err.message}`);
+    }
+  });
+});
+
+// Iniciar servidor de métricas en el puerto 3001
+appMetrics.listen(3001, () => {
+  console.log(`Servidor de métricas corriendo en http://localhost:3001/metrics`);
+});
+
+// Función para procesar las métricas
+function parseMetrics(data) {
+  const lines = data.split('\n');
+  const metrics = {
+    labels: [],
+    values: []
+  };
+
+  lines.forEach(line => {
+    const metricRegex = /^([a-zA-Z0-9_]+)\{(.*?)\}\s+([0-9.]+)$/;
+    const match = line.match(metricRegex);
+
+    if (match) {
+      const metricName = match[1];
+      const labels = match[2];
+      const value = parseFloat(match[3]);
+
+      metrics.labels.push(`${metricName} {${labels}}`);
+      metrics.values.push(value);
+    }
+  });
+
+  return metrics;
+}

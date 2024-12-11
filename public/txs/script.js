@@ -34,7 +34,7 @@ function displayTransactions(transactions, page, rows) {
       <td>${transaction.fecha}</td>
       <td>${transaction.tipoOperacion}</td>
       <td>${transaction.ownerAnterior}</td>
-      <td>${transaction.to}</td>
+      <td><i class="fa-solid fa-arrow-right"></i></td>
       <td>${transaction.nuevoOwner}</td>
       <td><a href="#" data-id="${transaction.idTransaccion}">${shortenedId}</a></td>
     `;

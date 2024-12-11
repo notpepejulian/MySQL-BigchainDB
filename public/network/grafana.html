@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráfico de Métricas Apiladas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="../txs/styles.css">
+</head>
+
+<body>
+    <!-- Header similar al de la página de Chart.js -->
+    <header class="header">
+        <div class="logo">
+          <h1>Dickchain</h1>
+        </div>
+        <nav class="nav">
+          <a href="#">Inicio</a>
+          <a href="#">Bloques</a>
+          <button id="theme-toggle" class="theme-button"></button>
+        </nav>
+      </header>
+
+    <!-- Título de la página -->
+    <h1 class="page-title">Métricas CPU (Prometheus)</h1>
+
+    <!-- Contenedor del gráfico -->
+    <div class="chart-container">
+        <canvas id="metricsChart" width="200" height="100"></canvas>
+    </div>
+
+    <!-- Script para cargar el gráfico -->
+    <script src="./script/dashborads.js"></script>
+</body>
+
+</html>
