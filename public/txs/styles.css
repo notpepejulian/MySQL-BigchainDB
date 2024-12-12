@@ -182,7 +182,11 @@ tbody tr:hover{
   height: 40px;
   display: flex;
   color: #bbbbbb;
+}
 
+.detail-value a{
+  color: #00b78f;
+  text-decoration: none;
 }
 
 .detail-status{
@@ -320,27 +324,92 @@ tbody tr:hover{
 }
 
 
-/* Estilos para graficos  */
-
-.page-title {
-  text-align: center;
-  font-size: 2rem;
-  margin-top: 40px;
-  font-family: 'Arial', sans-serif;
-  color: #00e8b4;
-}
-
-/* Estilo para el contenedor del gráfico */
-.chart-container {
-  max-width: 800px;
-  margin: 30px auto;
+#search-container {
+  margin: 20px auto;
   text-align: center;
 }
 
-/* Estilo para el gráfico */
-canvas {
-  width: 100% !important;
-  height: auto !important;
+#transaction-id {
+  padding: 10px;
+  width: 300px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: #2e2e2e;
+  color: #bbbbbb;
 }
 
+#search-btn {
+  font-size: 16px;
+  background-color: #00b78f;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 0 5px ;
+}
+
+#search-btn:hover {
+  background-color: #008f70;
+}
+
+#transaction-details-container {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.transaction-details pre {
+  background-color: #1e1e1e;
+  padding: 15px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+.transaction-details .close-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #00b78f;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.transaction-details .close-btn:hover {
+  background-color: #008f70;
+
+}
+
+/* Estilo del buscador */
+#search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#transaction-id {
+  padding: 10px;
+  font-size: 16px;
+  width: 300px;
+  border: 1px solid transparent;
+}
+
+.fa-search{
+  display: flex;
+  align-content: center;
+}
+
+#transaction-title{
+  color: #00b78f;
+  
+ }
+
+ #transaction-id:hover {
+  /* box-shadow: 0 0 10px #008f70; */
+  background-color: #171717;
+  border-color: transparent;
+ }
 

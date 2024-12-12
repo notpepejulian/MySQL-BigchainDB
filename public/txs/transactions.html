@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transacciones</title>
+  <title>Explorador de Transacciones</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -13,15 +13,22 @@
       <h1>Dickchain</h1>
     </div>
     <nav class="nav">
-      <a href="#">Inicio</a>
-      <a href="#">Bloques</a>
-      <button id="theme-toggle" class="theme-button"></button>
+      <div id="search-container">
+        <input type="text" id="transaction-id" placeholder="Buscar Transacción">
+        <button id="search-btn">
+          <i class="fa-solid fa-search"></i>
+        </button>
+      </div>
     </nav>
+    <button id="theme-toggle" class="theme-button"></button>
   </header>
 
   <main class="container">
     <h1 class="title">Explorador de Transacciones</h1>
-    <table>
+    <div id="transaction-details-container" style="display: none;">
+      <!-- Aquí se mostrarán los detalles de la transacción -->
+    </div>
+    <table id="transaction-table" style="display: table;">
       <thead>
         <tr>
           <th>Firma</th>
@@ -38,7 +45,7 @@
         <!-- Las transacciones se cargarán aquí -->
       </tbody>
     </table>
-    <div class="pagination">
+    <div class="pagination" id="pagination-interface">
       <div class="pagination-container">
         <button id="first-page"><i class="fa-solid fa-angles-left"></i></button>
         <button id="prev-page"><i class="fa-solid fa-angle-left"></i></button>
@@ -47,10 +54,8 @@
         <button id="last-page"><i class="fa-solid fa-angles-right"></i></button>
       </div>
     </div>
-    
   </main>
 
   <script src="script.js"></script>
 </body>
 </html>
-
