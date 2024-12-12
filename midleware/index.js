@@ -318,7 +318,7 @@ app.get('/transactions', async (req, res) => {
 
 
 // Servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Iniciar servidor
 app.listen(3000, () => {
