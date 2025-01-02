@@ -214,7 +214,7 @@ searchButton.addEventListener('click', async () => {
         const transactionData = await response.json();
         const blockData = await fetch(`http://192.168.1.100:9984/api/v1/blocks?transaction_id=${transactionId}`).then(res => res.json());
         const validatorData = await fetch(`http://192.168.1.100:9984/api/v1/validators?transaction_id=${transactionId}`).then(res => res.json());
-
+        console.log(validatorData);
         const table = document.getElementById('transaction-table');
         const detailsContainer = document.getElementById('transaction-details-container');
         const pagination = document.getElementById('pagination-interface');
@@ -238,7 +238,7 @@ searchButton.addEventListener('click', async () => {
         const fulfillment = transactionData.inputs[0]?.fulfillment || 'Sin Firma';
         const blockId = blockData.length > 0 ? blockData : 'Sin Bloque';
         const timestamp = transactionData.asset?.data?.timestamp || 'Sin Fecha';
-        const validator = validatorData?.public_key?.value || 'Sin Validador';
+        const validator = validatorData[0]?.public_key?.value || 'Sin Validador';
         const estado = fulfillment !== "Sin Firma"
             ? `<span class="success"><i class="fa-solid fa-check-circle"></i> SUCCESS! (Validaciones Correctas)</span>`
             : `<span class="fail"><i class="fa-solid fa-times-circle"></i> Transaction FAIL!</span>`;

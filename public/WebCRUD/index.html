@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Transacciones</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Gestión de Transacciones</h1>
+  </header>
+
+  <main>
+    <div class="button-container">
+      <button id="insert-button">Insertar</button>
+      <button id="update-button">Actualizar</button>
+      <button id="delete-button">Eliminar</button>
+    </div>
+
+    <form id="create-form">
+      <h2>Insertar Nueva Transacción</h2>
+      <label for="campo1">Campo 1:</label>
+      <input type="text" id="campo1" name="campo1" required>
+      <label for="campo2">Campo 2:</label>
+      <input type="text" id="campo2" name="campo2" required>
+      <button type="submit">Insertar</button>
+    </form>
+
+    <form id="update-form">
+      <h2>Actualizar Transacción</h2>
+      <label for="update-id">ID:</label>
+      <input type="text" id="update-id" name="id" required>
+      <label for="update-campo1">Campo 1:</label>
+      <input type="text" id="update-campo1" name="campo1" required>
+      <label for="update-campo2">Campo 2:</label>
+      <input type="text" id="update-campo2" name="campo2" required>
+      <button type="submit">Actualizar</button>
+    </form>
+
+    <form id="delete-form">
+      <h2>Eliminar Transacción</h2>
+      <label for="delete-id">ID:</label>
+      <input type="text" id="delete-id" name="id" required>
+      <button type="submit">Eliminar</button>
+    </form>
+
+    <!-- <section>
+      <h2>Lista de Transacciones</h2>
+      <table id="transactions-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Campo 1</th>
+            <th>Campo 2</th>
+            <th>Operación</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </section> -->
+
+    <div id="operation-summary" style="display: none; margin-top: 20px; padding: 15px; background-color: #2e2e2e; border-radius: 8px; color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+      <h3>Resumen de Operación</h3>
+      <div id="summary-contenido">
+        <p><strong><i class="fa-solid fa-circle-info"></i>ID:</strong> <span id="summary-id">N/A</span></p>
+        <p><strong><i class="fa-solid fa-circle-info"></i>Transaction ID:</strong> <span id="summary-transaction-id">N/A</span></p>
+        <p><strong><i class="fa-solid fa-circle-info"></i>Operación:</strong> <span id="summary-operation-type">N/A</span></p>
+        <p><strong><i class="fa-solid fa-circle-info"></i>Campo 1:</strong> <span id="summary-campo1">N/A</span></p>
+        <p><strong><i class="fa-solid fa-circle-info"></i>Campo 2:</strong> <span id="summary-campo2">N/A</span></p>
+        <p><strong><i class="fa-solid fa-circle-info"></i>Tabla:</strong> <span id="summary-table">tabla_test</span></p>
+      </div>
+    </div>
+    
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

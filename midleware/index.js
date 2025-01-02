@@ -107,8 +107,9 @@ app.post('/create_transaction', async (req, res) => {
     await db.promise().query(updateSql, [signedTx.id, results.insertId]);
 
     res.status(201).json({
-      message: 'Datos insertados en MySQL y transacción creada en BigchainDB',
+      message: 'Datos insertados.',
       transactionId: signedTx.id,
+      id: results.insertId,
     });
   } catch (err) {
     console.error('Error al crear transacción:', err);
@@ -194,9 +195,9 @@ app.put('/update_transaction/:id', async (req, res) => {
     await db.promise().query(updateSql, [campo1, campo2, signedTxAfter.id, id]);
 
     res.json({
-      message: 'Datos actualizados en MySQL y transacciones registradas en BigchainDB',
-      transactionIdBefore: signedTxBefore.id,
+      message: 'Datos actualizados.',
       transactionIdAfter: signedTxAfter.id,
+      id,
     });
   } catch (err) {
     console.error('Error al actualizar transacción:', err);
@@ -246,8 +247,11 @@ app.delete('/delete_transaction/:id', async (req, res) => {
     await db.promise().query(sqlDelete, [id]);
 
     res.json({
-      message: 'Datos eliminados de MySQL y transacción registrada en BigchainDB',
+      message: 'Datos eliminados.',
       transactionId: signedTx.id,
+      id, // ID de la fila eliminada en MySQL
+      campo1, // Campo 1 de la fila eliminada
+      campo2, // Campo 2 de la fila eliminada
     });
   } catch (err) {
     console.error('Error al borrar transacción:', err);
