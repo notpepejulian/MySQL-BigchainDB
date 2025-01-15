@@ -21,6 +21,8 @@ Este proyecto requiere la instalación de los drivers de BigchainDB para interac
   pip install bigchaindb-driver
   ```
 
+![image](https://github.com/user-attachments/assets/7041a336-7c8b-4e64-be46-58bcd4098513)
+
 
 ---
 
